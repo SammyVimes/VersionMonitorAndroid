@@ -2,9 +2,12 @@ package com.danilov.versionmonitor.api;
 
 import com.danilov.versionmonitor.model.ProjectDetails;
 import com.danilov.versionmonitor.model.Project;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Protocol;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit.GsonConverterFactory;
@@ -41,7 +44,11 @@ public class ApiService {
     }
 
     public static String getAppIconUrl(final long projectId, final int versionId) {
-        return Config.URL + "project/" + projectId + "/" + versionId + "/icon";
+        return Config.URL + "api/project/" + projectId + "/" + versionId + "/icon";
+    }
+
+    public static String getAppApk(final long projectId, final int versionId) {
+        return Config.URL + "api/project/" + projectId + "/" + versionId + "/apk";
     }
 
     private static ApiService ourInstance = new ApiService();
@@ -51,9 +58,14 @@ public class ApiService {
     }
 
     private ApiService() {
+
+        OkHttpClient client = new OkHttpClient();
+        client.setProtocols(Collections.singletonList(Protocol.HTTP_1_1));
+
         Retrofit retrofit = new Retrofit.Builder().baseUrl(Config.URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .client(client)
                 .build();
         api = retrofit.create(Api.class);
     }

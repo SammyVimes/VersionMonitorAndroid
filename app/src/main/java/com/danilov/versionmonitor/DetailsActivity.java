@@ -1,9 +1,12 @@
 package com.danilov.versionmonitor;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,12 +21,19 @@ import com.danilov.versionmonitor.model.ProjectDetails;
 import com.danilov.versionmonitor.model.Project;
 import com.danilov.versionmonitor.model.Version;
 import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Protocol;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 import com.squareup.picasso.Callback;
-import com.squareup.picasso.OkHttpDownloader;
-import com.squareup.picasso.Picasso;
 
-import java.util.Collections;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.List;
 
 /**
@@ -42,6 +52,8 @@ public class DetailsActivity extends BaseActivity implements View.OnClickListene
 
     private Project project = null;
 
+    private boolean loaded = false;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +67,16 @@ public class DetailsActivity extends BaseActivity implements View.OnClickListene
         versionsList = view(R.id.versions_list);
         versionsList.setLayoutManager(new LinearLayoutManager(context));
 
+        view(R.id.download_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                if (!loaded) {
+                    return;
+                }
+                downloadVersion(project.getId(), project.getLastVersionInt());
+            }
+        });
+
         Intent intent = getIntent();
         long projectId = intent.getLongExtra(PROJECT_ID_EXTRA, -1);
         if (projectId != -1) {
@@ -65,9 +87,97 @@ public class DetailsActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     public void onClick(final View v) {
-
+        if (!loaded) {
+            return;
+        }
     }
 
+    private void downloadVersion(final long projectId, final int versionInt) {
+        DownloadTask downloadTask = new DownloadTask(projectId, versionInt);
+        downloadTask.execute();
+    }
+
+    class DownloadTask extends AsyncTask<Void, Integer, File> {
+
+        private long projectId;
+        private int versionInt;
+
+
+        private ProgressDialog progressDialog;
+
+        public DownloadTask(final long projectId, final int versionInt) {
+            this.projectId = projectId;
+            this.versionInt = versionInt;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = new ProgressDialog(DetailsActivity.this);
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.setMessage("Загрузка...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
+
+        @Override
+        protected File doInBackground(final Void... params) {
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder().url(ApiService.getAppApk(projectId, versionInt))
+                    .addHeader("Content-Type", "application/json").build();
+            Response response = null;
+            try {
+                response = client.newCall(request).execute();
+
+                InputStream in = response.body().byteStream();
+                long lenghtOfFile = response.body().contentLength();
+
+                File externalFilesDir = context.getExternalFilesDir(null);
+                if (externalFilesDir == null) {
+                    externalFilesDir = context.getFilesDir();
+                }
+                File outputFile = new File(externalFilesDir.getPath() + "/app.apk");
+
+                BufferedInputStream input = new BufferedInputStream(in);
+                FileOutputStream output = new FileOutputStream(outputFile, false);
+
+                byte data[] = new byte[1024];
+                int count;
+                long total = 0;
+                while ((count = input.read(data)) != -1) {
+                    total += count;
+                    publishProgress((int)(total * 100 / lenghtOfFile));
+                    output.write(data, 0, count);
+                }
+
+                output.flush();
+                output.close();
+                input.close();
+
+                return outputFile;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(final File file) {
+            if (file != null) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+            progressDialog.dismiss();
+            progressDialog = null;
+        }
+
+        @Override
+        protected void onProgressUpdate(final Integer... values) {
+            progressDialog.setProgress(values[0]);
+        }
+
+    }
 
     class DetailsTask extends AsyncTask<Void, Void, ProjectDetails> {
 
@@ -84,17 +194,20 @@ public class DetailsActivity extends BaseActivity implements View.OnClickListene
 
         @Override
         protected void onPostExecute(final ProjectDetails projectDetails) {
-            project = projectDetails.getProject();
-            appName.setText(project.getName());
-            appPackageName.setText(project.getPackageName());
-            appLastVersion.setText(project.getLastVersionString());
-            appDescription.setText(project.getDefinition());
-            picasso.load(ApiService.getAppIconUrl(project.getId(), project.getLastVersionInt())).into(appIcon);
+            if (projectDetails != null) {
+                project = projectDetails.getProject();
+                appName.setText(project.getName());
+                appPackageName.setText(project.getPackageName());
+                appLastVersion.setText(project.getLastVersionString());
+                appDescription.setText(project.getDefinition());
+                picasso.load(ApiService.getAppIconUrl(project.getId(), project.getLastVersionInt())).into(appIcon);
 
 
-            List<Version> versions = projectDetails.getVersions();
-            VersionsAdapter versionsAdapter = new VersionsAdapter(versions);
-            versionsList.setAdapter(versionsAdapter);
+                List<Version> versions = projectDetails.getVersions();
+                VersionsAdapter versionsAdapter = new VersionsAdapter(versions);
+                versionsList.setAdapter(versionsAdapter);
+                loaded = true;
+            }
         }
 
     }
@@ -102,8 +215,6 @@ public class DetailsActivity extends BaseActivity implements View.OnClickListene
     private class VersionsAdapter extends RecyclerView.Adapter<VersionViewHolder> {
 
         private List<Version> versions;
-
-        private Context context = getApplicationContext();
 
         public VersionsAdapter(final List<Version> versions) {
             this.versions = versions;

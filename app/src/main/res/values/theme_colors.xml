@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="btn_common_disabled">@color/colorPrimaryHalf</color>
+    <color name="btn_common_normal">@color/colorPrimaryDark</color>
+    <color name="btn_common_pressed">@color/colorPrimary</color>
+    <color name="btn_common_ripple">@color/colorPrimaryHalf</color>
+
+</resources>
