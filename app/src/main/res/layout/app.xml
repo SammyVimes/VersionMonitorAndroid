@@ -64,6 +64,11 @@
                     android:layout_height="wrap_content"/>
 
                 <TextView
+                    android:id="@+id/installed_version"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
                     android:id="@+id/project_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>

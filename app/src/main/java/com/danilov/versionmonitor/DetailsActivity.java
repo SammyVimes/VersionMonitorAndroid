@@ -3,6 +3,9 @@ package com.danilov.versionmonitor;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -46,6 +49,7 @@ public class DetailsActivity extends BaseActivity implements View.OnClickListene
     private TextView appName;
     private TextView appPackageName;
     private TextView appLastVersion;
+    private TextView installedVersion;
     private TextView appDescription;
     private ImageView appIcon;
     private RecyclerView versionsList;
@@ -63,6 +67,7 @@ public class DetailsActivity extends BaseActivity implements View.OnClickListene
         appIcon = view(R.id.project_icon);
         appPackageName = view(R.id.package_name);
         appLastVersion = view(R.id.project_version);
+        installedVersion = view(R.id.installed_version);
         appDescription = view(R.id.project_description);
         versionsList = view(R.id.versions_list);
         versionsList.setLayoutManager(new LinearLayoutManager(context));
@@ -199,6 +204,31 @@ public class DetailsActivity extends BaseActivity implements View.OnClickListene
                 appName.setText(project.getName());
                 appPackageName.setText(project.getPackageName());
                 appLastVersion.setText(project.getLastVersionString());
+
+                int lastV = project.getLastVersionInt();
+                PackageManager manager = context.getPackageManager();
+                PackageInfo appInfo = null;
+                int alreadyInstalledVersion = 0;
+                try {
+                    appInfo = manager.getPackageInfo(project.getPackageName(), 0);
+                    alreadyInstalledVersion = appInfo.versionCode;
+                } catch (PackageManager.NameNotFoundException e) {
+                    alreadyInstalledVersion = -1; //NOT INSTALLED AT ALL!
+                }
+
+                String ourVersionString = "Установленный релиз: ";
+                if (alreadyInstalledVersion != -1) {
+                    if (lastV > alreadyInstalledVersion) {
+                        ourVersionString += "(устарел) ";
+                        installedVersion.setTextColor(Color.RED);
+                    }
+                    ourVersionString += alreadyInstalledVersion;
+                } else {
+                    installedVersion.setTextColor(Color.RED);
+                    ourVersionString = "Не установлено";
+                }
+                installedVersion.setText(ourVersionString);
+
                 appDescription.setText(project.getDefinition());
                 picasso.load(ApiService.getAppIconUrl(project.getId(), project.getLastVersionInt())).into(appIcon);
 
