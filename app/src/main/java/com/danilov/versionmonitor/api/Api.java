@@ -1,8 +1,8 @@
 package com.danilov.versionmonitor.api;
 
 import com.danilov.versionmonitor.model.LoginResponse;
-import com.danilov.versionmonitor.model.ProjectDetails;
 import com.danilov.versionmonitor.model.Project;
+import com.danilov.versionmonitor.model.ProjectDetails;
 
 import java.util.List;
 

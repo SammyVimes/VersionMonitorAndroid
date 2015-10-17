@@ -1,7 +1,6 @@
 package com.danilov.versionmonitor;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -9,7 +8,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,8 +18,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.danilov.versionmonitor.api.ApiService;
-import com.danilov.versionmonitor.model.ProjectDetails;
 import com.danilov.versionmonitor.model.Project;
+import com.danilov.versionmonitor.model.ProjectDetails;
 import com.danilov.versionmonitor.model.Version;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -29,14 +27,10 @@ import com.squareup.okhttp.Response;
 import com.squareup.picasso.Callback;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.List;
 
 /**
@@ -150,7 +144,7 @@ public class DetailsActivity extends BaseActivity implements View.OnClickListene
                 long total = 0;
                 while ((count = input.read(data)) != -1) {
                     total += count;
-                    publishProgress((int)(total * 100 / lenghtOfFile));
+                    publishProgress((int) (total * 100 / lenghtOfFile));
                     output.write(data, 0, count);
                 }
 

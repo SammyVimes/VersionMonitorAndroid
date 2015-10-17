@@ -6,8 +6,8 @@ import android.preference.PreferenceManager;
 
 import com.danilov.versionmonitor.App;
 import com.danilov.versionmonitor.model.LoginResponse;
-import com.danilov.versionmonitor.model.ProjectDetails;
 import com.danilov.versionmonitor.model.Project;
+import com.danilov.versionmonitor.model.ProjectDetails;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Protocol;
 

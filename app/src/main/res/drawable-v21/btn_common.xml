@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="@color/btn_common_ripple">
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+        android:color="@color/btn_common_ripple">
 
     <item>
         <selector>
             <item android:state_pressed="true">
                 <layer-list>
-                    <item android:left="2dp" android:top="2dp">
+                    <item
+                        android:left="2dp"
+                        android:top="2dp">
                         <shape android:shape="rectangle">
                             <solid android:color="#7c000000"/>
                         </shape>
                     </item>
-                    <item android:left="2dp" android:top="2dp">
+                    <item
+                        android:left="2dp"
+                        android:top="2dp">
                         <shape android:shape="rectangle">
                             <solid android:color="@color/btn_common_normal"/>
                         </shape>
@@ -20,12 +25,16 @@
 
             <item>
                 <layer-list>
-                    <item android:left="2dp" android:top="2dp">
+                    <item
+                        android:left="2dp"
+                        android:top="2dp">
                         <shape android:shape="rectangle">
                             <solid android:color="#7c000000"/>
                         </shape>
                     </item>
-                    <item android:right="2dp" android:bottom="2dp">
+                    <item
+                        android:right="2dp"
+                        android:bottom="2dp">
                         <shape android:shape="rectangle">
                             <solid android:color="@color/btn_common_normal"/>
                         </shape>
@@ -34,7 +43,6 @@
             </item>
         </selector>
     </item>
-
 
 
 </ripple>
