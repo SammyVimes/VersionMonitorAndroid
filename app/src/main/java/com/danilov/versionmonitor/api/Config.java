@@ -5,7 +5,6 @@ package com.danilov.versionmonitor.api;
  */
 public class Config {
 
-//    public static final String URL = "http://188.134.9.132:8000/versionmonitor/";
     public static final String URL = "http://192.168.0.73:8000/versionmonitor/";
 
 }
