@@ -29,9 +29,14 @@ public class ApiService {
     private Api api = null;
 
     public List<Project> getAllProjects() {
+
+        final Context context = App.getContext();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String token = sharedPreferences.getString("TOKEN", "");
+
         List<Project> projects = new ArrayList<>();
         try {
-            Response<List<Project>> execute = api.getAllProjects().execute();
+            Response<List<Project>> execute = api.getAllProjects(token).execute();
             projects.addAll(execute.body());
         } catch (IOException e) {
             e.printStackTrace();
@@ -40,8 +45,13 @@ public class ApiService {
     }
 
     public ProjectDetails getProjectDetails(final long projectId) {
+
+        final Context context = App.getContext();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String token = sharedPreferences.getString("TOKEN", "");
+
         try {
-            Response<ProjectDetails> execute = api.getProjectDetails("" + projectId).execute();
+            Response<ProjectDetails> execute = api.getProjectDetails("" + projectId, token).execute();
             return execute.body();
         } catch (IOException e) {
             e.printStackTrace();
@@ -64,7 +74,12 @@ public class ApiService {
     }
 
     public String getAppApk(final long projectId, final int versionId) {
-        return url + "api/project/" + projectId + "/" + versionId + "/apk";
+
+        final Context context = App.getContext();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String token = sharedPreferences.getString("TOKEN", "");
+
+        return url + "api/project/" + projectId + "/" + versionId + "/apk?token=" + token;
     }
 
     private static ApiService ourInstance = new ApiService();
