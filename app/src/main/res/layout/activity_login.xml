@@ -23,6 +23,22 @@
                 android:paddingLeft="30dp"
                 android:paddingRight="30dp">
 
+                <ImageView
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_cloud"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-thin"
+                    android:gravity="center"
+                    android:text="Мониторъ версий"
+                    android:textColor="#fff"
+                    android:textSize="40sp"
+                    android:typeface="sans"/>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -49,6 +65,7 @@
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:inputType="textPassword"
                     android:textColor="#fff"
                     android:textSize="20sp"/>
 
@@ -71,6 +88,7 @@
 
                 <Button
                     android:id="@+id/login_button"
+                    style="@style/AppTheme.ButtonCommonWhite"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"

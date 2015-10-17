@@ -79,7 +79,7 @@ public class ApiService {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         String token = sharedPreferences.getString("TOKEN", "");
 
-        return url + "api/project/" + projectId + "/" + versionId + "/apk?token=" + token;
+        return url + "api/project/" + projectId + "/" + versionId + "/apk?key=" + token;
     }
 
     private static ApiService ourInstance = new ApiService();

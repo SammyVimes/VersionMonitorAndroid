@@ -6,4 +6,9 @@
     <color name="btn_common_pressed">@color/colorPrimary</color>
     <color name="btn_common_ripple">@color/colorPrimaryHalf</color>
 
+    <color name="btn_common_white_disabled">#689f9f9f</color>
+    <color name="btn_common_white_normal">#e2e2e2</color>
+    <color name="btn_common_white_pressed">#b1b1b1</color>
+    <color name="btn_common_white_ripple">#948c8c8c</color>
+
 </resources>

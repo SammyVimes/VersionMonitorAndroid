@@ -25,6 +25,11 @@
         <item name="android:background">@drawable/btn_common</item>
     </style>
 
+    <style name="AppTheme.ButtonCommonWhite" parent="@style/AppTheme.ButtonCommon">
+        <item name="android:background">@drawable/btn_common_white</item>
+        <item name="android:textColor">#5b5b5b</item>
+    </style>
+
     <style name="AppTheme.ToolbarStyle" parent="Theme.AppCompat">
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:textColorSecondary">@android:color/white</item>
