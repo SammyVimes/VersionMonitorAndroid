@@ -127,7 +127,7 @@ public class DetailsActivity extends BaseActivity implements View.OnClickListene
         @Override
         protected File doInBackground(final Void... params) {
             OkHttpClient client = new OkHttpClient();
-            Request request = new Request.Builder().url(ApiService.getAppApk(projectId, versionInt))
+            Request request = new Request.Builder().url(ApiService.getInstance().getAppApk(projectId, versionInt))
                     .addHeader("Content-Type", "application/json").build();
             Response response = null;
             try {
@@ -230,7 +230,7 @@ public class DetailsActivity extends BaseActivity implements View.OnClickListene
                 installedVersion.setText(ourVersionString);
 
                 appDescription.setText(project.getDefinition());
-                picasso.load(ApiService.getAppIconUrl(project.getId(), project.getLastVersionInt())).into(appIcon);
+                picasso.load(ApiService.getInstance().getAppIconUrl(project.getId(), project.getLastVersionInt())).into(appIcon);
 
 
                 List<Version> versions = projectDetails.getVersions();
@@ -263,7 +263,7 @@ public class DetailsActivity extends BaseActivity implements View.OnClickListene
             holder.versionInt.setText(version.getVersionInteger());
             holder.versionString.setText(version.getVersionString());
             holder.versionChanges.setText(version.getChanges());
-            picasso.load(ApiService.getAppIconUrl(project.getId(), Integer.parseInt(version.getVersionInteger())))
+            picasso.load(ApiService.getInstance().getAppIconUrl(project.getId(), Integer.parseInt(version.getVersionInteger())))
                     .into(holder.versionIcon, new Callback() {
                         @Override
                         public void onSuccess() {

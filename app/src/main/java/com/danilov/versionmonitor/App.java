@@ -1,6 +1,7 @@
 package com.danilov.versionmonitor;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 /**
@@ -8,9 +9,12 @@ import android.util.Log;
  */
 public class App extends Application {
 
+    private static Context context;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        context = getApplicationContext();
         final Thread.UncaughtExceptionHandler defaultUncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
@@ -20,4 +24,9 @@ public class App extends Application {
             }
         });
     }
+
+    public static Context getContext() {
+        return context;
+    }
+
 }

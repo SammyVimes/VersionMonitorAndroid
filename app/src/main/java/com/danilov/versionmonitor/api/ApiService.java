@@ -1,5 +1,11 @@
 package com.danilov.versionmonitor.api;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import com.danilov.versionmonitor.App;
+import com.danilov.versionmonitor.model.LoginResponse;
 import com.danilov.versionmonitor.model.ProjectDetails;
 import com.danilov.versionmonitor.model.Project;
 import com.squareup.okhttp.OkHttpClient;
@@ -43,12 +49,22 @@ public class ApiService {
         return null;
     }
 
-    public static String getAppIconUrl(final long projectId, final int versionId) {
-        return Config.URL + "api/project/" + projectId + "/" + versionId + "/icon";
+    public LoginResponse login(final String login, final String password) {
+        try {
+            Response<LoginResponse> execute = api.login(login, password).execute();
+            return execute.body();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public static String getAppApk(final long projectId, final int versionId) {
-        return Config.URL + "api/project/" + projectId + "/" + versionId + "/apk";
+    public String getAppIconUrl(final long projectId, final int versionId) {
+        return url + "api/project/" + projectId + "/" + versionId + "/icon";
+    }
+
+    public String getAppApk(final long projectId, final int versionId) {
+        return url + "api/project/" + projectId + "/" + versionId + "/apk";
     }
 
     private static ApiService ourInstance = new ApiService();
@@ -57,16 +73,44 @@ public class ApiService {
         return ourInstance;
     }
 
-    private ApiService() {
+    private Retrofit retrofit = null;
+    private String url = Config.URL;
 
+    private ApiService() {
         OkHttpClient client = new OkHttpClient();
         client.setProtocols(Collections.singletonList(Protocol.HTTP_1_1));
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(Config.URL)
+        final Context context = App.getContext();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String baseUrl = sharedPreferences.getString("BASE_URL", "");
+        if ("".equals(baseUrl)) {
+            baseUrl = Config.URL;
+        }
+
+        url = baseUrl;
+        retrofit = new Retrofit.Builder().baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(client)
                 .build();
         api = retrofit.create(Api.class);
     }
+
+    public void setBaseUrl(final String url) {
+        final Context context = App.getContext();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        sharedPreferences.edit().putString("BASE_URL", url).apply();
+
+        OkHttpClient client = new OkHttpClient();
+        client.setProtocols(Collections.singletonList(Protocol.HTTP_1_1));
+
+        this.url = url;
+        retrofit = new Retrofit.Builder().baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .client(client)
+                .build();
+        api = retrofit.create(Api.class);
+    }
+
 }

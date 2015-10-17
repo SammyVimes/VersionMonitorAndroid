@@ -95,7 +95,7 @@ public class AppsActivity extends AppCompatActivity implements View.OnClickListe
             Project project = projects.get(position);
             holder.appName.setText(project.getName());
             holder.appVersion.setText(project.getLastVersionString());
-            picasso.load(ApiService.getAppIconUrl(project.getId(), project.getLastVersionInt()))
+            picasso.load(ApiService.getInstance().getAppIconUrl(project.getId(), project.getLastVersionInt()))
                     .into(holder.appIcon, new Callback() {
                         @Override
                         public void onSuccess() {
