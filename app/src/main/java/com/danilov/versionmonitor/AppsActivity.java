@@ -18,7 +18,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.danilov.versionmonitor.api.ApiService;
+import com.danilov.versionmonitor.model.IndexResponse;
 import com.danilov.versionmonitor.model.Project;
+import com.danilov.acentrifugo.PushService;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Protocol;
 import com.squareup.picasso.Callback;
@@ -52,16 +54,24 @@ public class AppsActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(intent);
     }
 
-    class ProjectsTask extends AsyncTask<Void, Void, List<Project>> {
+    class ProjectsTask extends AsyncTask<Void, Void, IndexResponse> {
 
         @Override
-        protected List<Project> doInBackground(final Void... params) {
+        protected IndexResponse doInBackground(final Void... params) {
             return ApiService.getInstance().getAllProjects();
         }
 
         @Override
-        protected void onPostExecute(final List<Project> projects) {
-            appsList.setAdapter(new AppsAdapter(projects));
+        protected void onPostExecute(final IndexResponse projects) {
+            if (projects.getIndexResult() != null) {
+                if (projects.getIndexResult() == IndexResponse.IndexResult.NOT_AUTHORIZED) {
+                    PreferenceManager.getDefaultSharedPreferences(AppsActivity.this).edit().putString("TOKEN", "").apply();
+                    startActivity(new Intent(AppsActivity.this, LoginActivity.class));
+                    finish();
+                }
+                return;
+            }
+            appsList.setAdapter(new AppsAdapter(projects.getProjects()));
         }
 
     }
@@ -154,4 +164,16 @@ public class AppsActivity extends AppCompatActivity implements View.OnClickListe
         }
         return true;
     }
+
+    @Override
+    protected void onResume() {
+//        PushService.start(this,
+//                "ws://192.168.0.73:8001/connection/websocket",
+//                "my-client-id",
+//                "1446134472610",
+//                "f6ead68483cc078cde1df20fde625a265030983d297a9ca0a9cb4e6347bcb18a",
+//                "python");
+        super.onResume();
+    }
+
 }

@@ -34,7 +34,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-thin"
                     android:gravity="center"
-                    android:text="Мониторъ версий"
+                    android:text="Монитор версий"
                     android:textColor="#fff"
                     android:textSize="40sp"
                     android:typeface="sans"/>

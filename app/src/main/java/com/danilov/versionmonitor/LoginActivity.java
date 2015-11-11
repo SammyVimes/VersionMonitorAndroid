@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.danilov.acentrifugo.PushService;
 import com.danilov.versionmonitor.api.ApiService;
 import com.danilov.versionmonitor.model.LoginResponse;
 
@@ -73,7 +74,21 @@ public class LoginActivity extends BaseActivity {
             if (loginResponse.getSuccess()) {
                 final Context context = getApplicationContext();
                 SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-                sharedPreferences.edit().putString("TOKEN", loginResponse.getKey()).apply();
+                sharedPreferences
+                .edit()
+                        .putString("TOKEN", loginResponse.getKey())
+                        .putString("PUSH_ID", loginResponse.getPushId())
+                        .putString("PUSH_TOKEN", loginResponse.getPushToken())
+                        .putLong("PUSH_TIMESTAMP", loginResponse.getPushTokenTimestamp())
+                .apply();
+
+                String pi = sharedPreferences.getString("PUSH_ID", "");
+                String token = sharedPreferences.getString("PUSH_TOKEN", "");
+                String ts = sharedPreferences.getLong("PUSH_TIMESTAMP", 0) + "";
+                if (!"".equals(pi)) {
+                    PushService.start(context, pi, token, ts);
+                }
+
                 proceed();
             } else {
                 SpannableStringBuilder snackbarText = new SpannableStringBuilder();

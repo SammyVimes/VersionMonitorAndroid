@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.danilov.versionmonitor.App;
+import com.danilov.versionmonitor.model.IndexResponse;
 import com.danilov.versionmonitor.model.LoginResponse;
 import com.danilov.versionmonitor.model.Project;
 import com.danilov.versionmonitor.model.ProjectDetails;
@@ -28,20 +29,19 @@ public class ApiService {
 
     private Api api = null;
 
-    public List<Project> getAllProjects() {
+    public IndexResponse getAllProjects() {
 
         final Context context = App.getContext();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         String token = sharedPreferences.getString("TOKEN", "");
-
-        List<Project> projects = new ArrayList<>();
+        IndexResponse indexResponse = null;
         try {
-            Response<List<Project>> execute = api.getAllProjects(token).execute();
-            projects.addAll(execute.body());
+            Response<IndexResponse> execute = api.getAllProjects(token).execute();
+            indexResponse = execute.body();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return projects;
+        return indexResponse;
     }
 
     public ProjectDetails getProjectDetails(final long projectId) {

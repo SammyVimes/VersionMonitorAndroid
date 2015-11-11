@@ -7,6 +7,36 @@ public class LoginResponse {
 
     private String key;
 
+    private String pushId;
+
+    private String pushToken;
+
+    private long pushTokenTimestamp;
+
+    public String getPushId() {
+        return pushId;
+    }
+
+    public void setPushId(final String pushId) {
+        this.pushId = pushId;
+    }
+
+    public String getPushToken() {
+        return pushToken;
+    }
+
+    public void setPushToken(final String pushToken) {
+        this.pushToken = pushToken;
+    }
+
+    public long getPushTokenTimestamp() {
+        return pushTokenTimestamp;
+    }
+
+    public void setPushTokenTimestamp(final long pushTokenTimestamp) {
+        this.pushTokenTimestamp = pushTokenTimestamp;
+    }
+
     private Boolean success;
 
     private LoginResult reason;

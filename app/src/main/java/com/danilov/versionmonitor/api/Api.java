@@ -1,5 +1,6 @@
 package com.danilov.versionmonitor.api;
 
+import com.danilov.versionmonitor.model.IndexResponse;
 import com.danilov.versionmonitor.model.LoginResponse;
 import com.danilov.versionmonitor.model.Project;
 import com.danilov.versionmonitor.model.ProjectDetails;
@@ -20,7 +21,7 @@ import retrofit.http.Query;
 public interface Api {
 
     @GET("api/project/")
-    Call<List<Project>> getAllProjects(@Query("key") final String token);
+    Call<IndexResponse> getAllProjects(@Query("key") final String token);
 
     @GET("api/project/{projectId}")
     Call<ProjectDetails> getProjectDetails(@Path("projectId") final String projectId, @Query("key") final String token);
