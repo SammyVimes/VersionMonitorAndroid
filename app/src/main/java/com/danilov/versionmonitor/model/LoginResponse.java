@@ -13,6 +13,16 @@ public class LoginResponse {
 
     private long pushTokenTimestamp;
 
+    private String channelToken;
+
+    public String getChannelToken() {
+        return channelToken;
+    }
+
+    public void setChannelToken(final String channelToken) {
+        this.channelToken = channelToken;
+    }
+
     public String getPushId() {
         return pushId;
     }

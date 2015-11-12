@@ -27,13 +27,7 @@ public class App extends Application {
                 defaultUncaughtExceptionHandler.uncaughtException(thread, ex);
             }
         });
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String pi = sharedPreferences.getString("PUSH_ID", "");
-        String token = sharedPreferences.getString("PUSH_TOKEN", "");
-        String ts = sharedPreferences.getLong("PUSH_TIMESTAMP", 0) + "";
-        if (!"".equals(pi)) {
-            PushService.start(this, pi, token, ts);
-        }
+        CHelper.startCentrifugoService();
     }
 
     public static Context getContext() {

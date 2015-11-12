@@ -47,14 +47,7 @@ public class NetworkStateChangeReceiver extends BroadcastReceiver {
     }
 
     private void doRoutine() {
-        Context context = App.getContext();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String pi = sharedPreferences.getString("PUSH_ID", "");
-        String token = sharedPreferences.getString("PUSH_TOKEN", "");
-        String ts = sharedPreferences.getLong("PUSH_TIMESTAMP", 0) + "";
-        if (!"".equals(pi)) {
-            PushService.start(context, pi, token, ts);
-        }
+        CHelper.startCentrifugoService();
     }
 
 }

@@ -15,5 +15,5 @@
         completions."
     </string>
     <string name="centrifugo_host">ws://192.168.0.73:8001/connection/websocket</string>
-    <string name="centrifugo_channel">versionmonitor</string>
+    <string name="centrifugo_channel">versionmonitor#</string>
 </resources>

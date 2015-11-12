@@ -79,15 +79,11 @@ public class LoginActivity extends BaseActivity {
                         .putString("TOKEN", loginResponse.getKey())
                         .putString("PUSH_ID", loginResponse.getPushId())
                         .putString("PUSH_TOKEN", loginResponse.getPushToken())
+                        .putString("CHANNEL_TOKEN", loginResponse.getChannelToken())
                         .putLong("PUSH_TIMESTAMP", loginResponse.getPushTokenTimestamp())
                 .apply();
 
-                String pi = sharedPreferences.getString("PUSH_ID", "");
-                String token = sharedPreferences.getString("PUSH_TOKEN", "");
-                String ts = sharedPreferences.getLong("PUSH_TIMESTAMP", 0) + "";
-                if (!"".equals(pi)) {
-                    PushService.start(context, pi, token, ts);
-                }
+                CHelper.startCentrifugoService();
 
                 proceed();
             } else {
