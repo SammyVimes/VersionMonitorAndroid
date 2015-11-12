@@ -33,14 +33,27 @@ public class PushReceiver extends BroadcastReceiver {
             return;
         }
         body = jsonObject.optString("data", "");
+        JSONObject data = null;
+        try {
+            data = new JSONObject(body);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if (data == null) {
+            return;
+        }
+        String text = data.optString("text", "");
+        Long projectId = Long.valueOf(data.optString("project_id", "0"));
 
         Resources res = context.getResources();
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-        NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle().bigText(body);
+        NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle().bigText(text);
         String title = context.getString(R.string.app_name);
-        PendingIntent goToAppPendingIntent = PendingIntent.getActivity(context, 1235091, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent startApp = new Intent(context, DetailsActivity.class);
+        startApp.putExtra(DetailsActivity.PROJECT_ID_EXTRA, projectId);
+        PendingIntent goToAppPendingIntent = PendingIntent.getActivity(context, 1235091, startApp, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        String ticker = body;
+        String ticker = text;
         if (ticker.length() > 50) {
             ticker = ticker.substring(0, 50) + "...";
         }
@@ -56,6 +69,7 @@ public class PushReceiver extends BroadcastReceiver {
                 .setWhen(System.currentTimeMillis())
                 .setContentTitle(title)
                 .setContentText(body)
+                .setAutoCancel(true)
                 .setStyle(bigTextStyle);
 
         Notification notification = builder.build();
