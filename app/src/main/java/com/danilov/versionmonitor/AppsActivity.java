@@ -63,15 +63,17 @@ public class AppsActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         protected void onPostExecute(final IndexResponse projects) {
-            if (projects.getIndexResult() != null) {
-                if (projects.getIndexResult() == IndexResponse.IndexResult.NOT_AUTHORIZED) {
-                    PreferenceManager.getDefaultSharedPreferences(AppsActivity.this).edit().putString("TOKEN", "").apply();
-                    startActivity(new Intent(AppsActivity.this, LoginActivity.class));
-                    finish();
+            if (projects != null) {
+                if (projects.getIndexResult() != null) {
+                    if (projects.getIndexResult() == IndexResponse.IndexResult.NOT_AUTHORIZED) {
+                        PreferenceManager.getDefaultSharedPreferences(AppsActivity.this).edit().putString("TOKEN", "").apply();
+                        startActivity(new Intent(AppsActivity.this, LoginActivity.class));
+                        finish();
+                    }
+                    return;
                 }
-                return;
+                appsList.setAdapter(new AppsAdapter(projects.getProjects()));
             }
-            appsList.setAdapter(new AppsAdapter(projects.getProjects()));
         }
 
     }
