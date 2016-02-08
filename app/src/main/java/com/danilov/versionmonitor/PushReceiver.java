@@ -11,6 +11,8 @@ import android.graphics.BitmapFactory;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
+import com.danilov.acentrifugo.Info;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,8 +21,22 @@ import org.json.JSONObject;
  */
 public class PushReceiver extends BroadcastReceiver {
 
+    private static final String TAG = "PushReceiver";
+
     @Override
     public void onReceive(final Context context, final Intent intent) {
+        Info info = intent.getParcelableExtra("info");
+        if (info != null) {
+            switch (info.getState()) {
+                case Info.CONNECTED:
+                    Log.i(TAG, "Connected to centrifugo");
+                    break;
+                case Info.SUBSCRIBED_TO_CHANNEL:
+                    Log.i(TAG, "Subscribed to channel " + info.getValue());
+                    break;
+            }
+            return;
+        }
         String body = intent.getStringExtra("body");
         JSONObject jsonObject = null;
         try {
@@ -28,7 +44,7 @@ public class PushReceiver extends BroadcastReceiver {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.i("PUSH", "Message from fugo: " + body);
+        Log.i("PUSH", "Message from centrifugo: " + body);
         if (jsonObject == null) {
             return;
         }
@@ -68,7 +84,7 @@ public class PushReceiver extends BroadcastReceiver {
                 .setContentIntent(goToAppPendingIntent)
                 .setWhen(System.currentTimeMillis())
                 .setContentTitle(title)
-                .setContentText(body)
+                .setContentText(text)
                 .setAutoCancel(true)
                 .setStyle(bigTextStyle);
 
